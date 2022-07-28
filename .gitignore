@@ -188,3 +188,5 @@ fabric.properties
 # .idea
 
 .vscode
+*.zip
+*.txt
