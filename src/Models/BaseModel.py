@@ -35,31 +35,37 @@ class BaseModel(metaclass=abc.ABCMeta):
         root_path = get_root_path()
         return os.path.join(root_path, 'assets', path)
 
-    def describe(self, dataframe):
+    def describe(self, dataframe, target):
         print("Head:")
         print(dataframe.head())
 
         print("Describe:")
         print(dataframe.describe())
 
-        print("Columnas: " )
+        print("Columnas: ")
         print(dataframe.columns)
 
         print('Por STEM')
-        by_STEM_class = dataframe.groupby([self._define_target_attribute()])
-        print(by_STEM_class.count())  
+        by_STEM_class = dataframe.groupby([target])
+        print(by_STEM_class.count())
 
         print('Por Sexo')
         by_sex_class = dataframe.groupby(['Sexo'])
-        print(by_sex_class.count())  
+        print(by_sex_class.count())
 
-    def split_dataset_by_attributes(self, define_attributes_to_learn):
-        attributes_to_learn = define_attributes_to_learn()
-        target = self._define_target_attribute()
+    def split_dataset_by_attributes(self, define_attributes_to_learn, target):
+        attributes_to_learn = define_attributes_to_learn
 
-        y = self._dataframe[target]
+        y = self._dataframe[target].astype(int)
         X = self._dataframe[attributes_to_learn]
+        # y[target] = y[target].astype(int)
 
+        objects = ['PTeorica1',	'PTeorica2',
+                   'PGustos1',	'PGustos2',	'PGustos3']
+        for object in objects:
+            X[object] = X[object] / 100
+
+        print(X.dtypes)
         X_train, X_valid, y_train, y_valid = train_test_split(
             X, y, random_state=1)
         return X, y, X_train, X_valid, y_train, y_valid
