@@ -6,3 +6,4 @@ PyQt5==5.15.7
 tensorflow==2.9.1
 scikeras==0.9.0
 tf==1.0.0
+hyperopt==0.2.7

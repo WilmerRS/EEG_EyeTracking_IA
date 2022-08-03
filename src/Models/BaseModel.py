@@ -17,6 +17,9 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from xgboost import XGBClassifier
 
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
+
 # domain
 from src.utils.get_root_path import get_root_path
 
@@ -58,16 +61,40 @@ class BaseModel(metaclass=abc.ABCMeta):
 
         y = self._dataframe[target].astype(int)
         X = self._dataframe[attributes_to_learn]
-        # y[target] = y[target].astype(int)
 
-        objects = ['PTeorica1',	'PTeorica2',
-                   'PGustos1',	'PGustos2',	'PGustos3']
-        for object in objects:
-            X[object] = X[object] / 100
-
-        print(X.dtypes)
+        # print(X.dtypes)
         X_train, X_valid, y_train, y_valid = train_test_split(
             X, y, random_state=1)
+
+        scaler = MinMaxScaler()
+
+        to_scaler =[ 
+          'NfOpt1_P1',	
+          'NfOpt2_P1',	
+          'NfOpt1_P2',	
+          'NfOpt2_P2',	
+          'NfOpt1_P3',	
+          'NfOpt2_P3',	
+          'NfOpt1_P4',	
+          'NfOpt2_P4',	
+          'NfOpt1_P5',	
+          'NfOpt2_P5',	
+          'TtfOpt1_P1',	
+          'TtfOpt2_P1',	
+          'TtfOpt1_P2',	
+          'TtfOpt2_P2',	
+          'TtfOpt1_P3',	
+          'TtfOpt2_P3',	
+          'TtfOpt1_P4',	
+          'TtfOpt2_P4',
+          'TtfOpt1_P5',	
+          'TtfOpt2_P5',
+        ]
+
+        scaler.fit(X[to_scaler])
+        X[to_scaler] = scaler.transform(X[to_scaler])
+        
+
         return X, y, X_train, X_valid, y_train, y_valid
 
     def _all_attributes(self):

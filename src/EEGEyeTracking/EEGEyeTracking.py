@@ -9,6 +9,7 @@ from src.Models.MachineLearning import MachineLearningCrossValidationModels
 from src.Models.MachineLearning import MutualInformationProcess
 from src.Models.MachineLearning import PermutationImportanceProcess
 from src.Models.DeepLearning import DeepLearningCrossValidationModels
+from src.Models.MachineLearning.XGBOptimization import XGBOptimization
 from src.Plot import BarPlotResult
 from src.Plot import BarPlotPermutationFeatureImportanceResult
 
@@ -35,6 +36,7 @@ class EEGEyeTracking(
         'eeg-eye-tracking-test-full-with-vars.csv'
     )
 
+    # _EEG_EYE_TRACKING_CSV_PATH = _EEG_EYE_TRACKING_CSV_PATH_FULL
     _EEG_EYE_TRACKING_CSV_PATH = _EEG_EYE_TRACKING_CSV_PATH_FULL_WITH_VARS
 
     _dataframe = None
@@ -82,7 +84,9 @@ class EEGEyeTracking(
         # self._mutual_information_full_with_vars()
         # self._permutation_feature_importance_cross_full_with_vars()
 
-        self._test_ml_models_full_with_vars()
+        # self._test_ml_models_full_with_vars()
+        self._test_dl_models_without_eeg_and_tft_full_with_vars()
+        # self._xgb_optimization()
 
     def _mutual_information_without_biometrics(self):
         X, y, X_train, X_valid, y_train, y_valid = self.split_dataset_by_attributes(
@@ -386,18 +390,27 @@ class EEGEyeTracking(
 
     def _all_attributes_full_with_vars(self):
         return [
-            'Teorica1', 'Teorica2', 'Gustos1', 'Gustos2', 'Gustos3',
-            'Edad', 'Sexo', 'Afirmacion1', 'Afirmacion2', 'PreguntaTrabajoCiencia',
-            'PeguntaConstruccion', 'PreguntaMultidipli', 'Asignaturas',
+            'Teorica1', 'Teorica2 ',
+            # 'Gustos1', 'Gustos2', 'Gustos3',
+            # 'Edad',
+            # 'Sexo',
+            'Afirmacion1', 'Afirmacion2',
+            'PreguntaTrabajoCiencia',
+            'PeguntaConstruccion', 'PreguntaMultidipli',
+            'Asignaturas', # -> mejora si la quito
             'ConocimientosProblemas', 'AnaliticoCreativo',
-            'PTeorica1',
-            'PTeorica2', 'PGustos1', 'PGustos2', 'PGustos3', 'NfOpt1_P1',
-            'NfOpt2_P1', 'NfOpt1_P2', 'NfOpt2_P2', 'NfOpt1_P3', 'NfOpt2_P3',
-            'NfOpt1_P4', 'NfOpt2_P4', 'NfOpt1_P5', 'NfOpt2_P5', 'TtfOpt1_P1',
-            'TtfOpt2_P1', 'TtfOpt1_P2', 'TtfOpt2_P2', 'TtfOpt1_P3', 'TtfOpt2_P3',
-            'TtfOpt1_P4', 'TtfOpt2_P4', 'TtfOpt1_P5', 'TtfOpt2_P5',
-            'P1_NAM_STEM',
-            'P2_NAM_STEM', 'P3_NAM_STEM', 'P4_NAM_STEM', 'P5_NAM_STEM'
+            'PTeorica1', 
+            'PTeorica2', 
+            'PGustos1', 'PGustos2',
+            'PGustos3',
+            'NfOpt1_P1', 'NfOpt2_P1', 'NfOpt1_P2', 'NfOpt2_P2',
+            'NfOpt1_P3', 'NfOpt2_P3', 'NfOpt1_P4', 'NfOpt2_P4', 'NfOpt1_P5',
+            'NfOpt2_P5',
+            'TtfOpt1_P1', 'TtfOpt2_P1', 'TtfOpt1_P2', 'TtfOpt2_P2',
+            'TtfOpt1_P3', 'TtfOpt2_P3', 'TtfOpt1_P4', 'TtfOpt2_P4', 'TtfOpt1_P5',
+            'TtfOpt2_P5',
+            'P1_NAM_STEM', 'P2_NAM_STEM', 'P3_NAM_STEM',
+            'P4_NAM_STEM', 'P5_NAM_STEM'
         ]
 
     def _mutual_information_full_with_vars(self):
@@ -438,3 +451,30 @@ class EEGEyeTracking(
 
         bar = BarPlotResult()
         bar.plot(results, names)
+
+    def _test_dl_models_without_eeg_and_tft_full_with_vars(self):
+        print(
+            '\n\_test_dl_models_without_eeg_and_tft_full_with_vars - Attributes count:\n\n')
+        attrs = self._all_attributes_full_with_vars()
+        print(len(attrs))
+        X, y, X_train, X_valid, y_train, y_valid = self.split_dataset_by_attributes(
+            attrs,
+            self._define_target_attribute_full()
+        )
+
+        results, names = self._validate_dl_classifier_models(
+            X, y
+        )
+        bar = BarPlotResult()
+        bar.plot(results, names)
+
+    def _xgb_optimization(self):
+        print('\n\_xgb_optimization - Attributes count:\n\n')
+        attrs = self._all_attributes_full_with_vars()
+        print(len(attrs))
+        X, y, X_train, X_valid, y_train, y_valid = self.split_dataset_by_attributes(
+            attrs,
+            self._define_target_attribute_full()
+        )
+        hp = XGBOptimization.best_hyper_params(X, y)
+        print(hp)

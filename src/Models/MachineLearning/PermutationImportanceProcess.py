@@ -7,7 +7,7 @@ from sklearn.inspection import permutation_importance
 
 
 class PermutationImportanceProcess(metaclass=abc.ABCMeta):
-    def _permutation_importance_cross(self, X, y, classifiers, names, splits=5, n_repeats=60):
+    def _permutation_importance_cross(self, X, y, classifiers, names, splits=2, n_repeats=2):
         skf = StratifiedKFold(n_splits=splits)
 
         result_cross = {}

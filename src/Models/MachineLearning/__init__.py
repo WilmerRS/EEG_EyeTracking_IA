@@ -2,3 +2,4 @@ from ..BaseModel import BaseModel
 from .MachineLearningCrossValidationModels import MachineLearningCrossValidationModels
 from .MutualInformationProcess import MutualInformationProcess
 from .PermutationImportanceProcess import PermutationImportanceProcess
+from .XGBOptimization import XGBOptimization

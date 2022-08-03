@@ -3,7 +3,8 @@ import abc
 # deep learning
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
-
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.constraints import MaxNorm
 from scikeras.wrappers import KerasClassifier
 
 # machine learning
@@ -16,18 +17,30 @@ from sklearn.preprocessing import StandardScaler
 
 class DeepLearningCrossValidationModels(metaclass=abc.ABCMeta):
 
-    def _one_node_binary_crossentropy(self, input_shape, layers, loss='binary_crossentropy', metrics=['binary_accuracy']):
+    def _one_node_binary_crossentropy(
+        self,
+        input_shape,
+        layers,
+        loss='binary_crossentropy',
+        metrics=['binary_accuracy'],
+        drop_out_percentage=0.2
+    ):
         model = Sequential()
         model.add(Dense(layers[0], input_shape=(
-            input_shape,), activation='tanh'))
+            input_shape,), activation='relu'))
 
         for layer in range(1, len(layers)):
             model.add(
+                Dropout(drop_out_percentage)
+            )
+            model.add(
                 Dense(
                     layers[layer],
-                    activation='tanh'
+                    activation='relu',
+                    kernel_constraint=MaxNorm(3),
                 )
             )
+
         model.add(Dense(1, activation='sigmoid'))
 
         model.compile(
@@ -39,49 +52,60 @@ class DeepLearningCrossValidationModels(metaclass=abc.ABCMeta):
 
     def _dl_models(self, columns):
         names = [
-            f'DL[{columns}]',
-            f'DL[{columns} {columns}]',
-            f'DL[{columns} {columns} {columns}]',
-            f'DL[{columns} {columns} {columns} {columns}]',
-            f'DL[{columns} 100]',
-            f'DL[{columns} 100]',
-            f'DL[{columns} 100 100]',
-            f'DL[{columns} 1000]',
-            f'DL[{columns} 20 30 20 30 20]',
-            f'DL[{columns} 30 30 30]',
-            f'DL[{columns} 50 70 50]',
+            # f'DL[{columns}]',
+            # f'DL[{columns} {columns}]',
+            # f'DL[{columns} {columns} {columns}]',
+            # f'DL[{columns} {columns} {columns} {columns}]',
+            # f'DL[{columns} 100]',
+            # f'DL[{columns} 100]',
+            # f'DL[{columns} 100 100]',
+            # f'DL[{columns} 1000]',
+            # f'DL[{columns} 20 30 20 30 20]',
+            # f'DL[{columns} 30 30 30]',
+            # f'DL[{columns} 50 70 50]',
             f'DL[{columns} 50 70 50 {columns}]',
-            f'DL[{columns} 60]',
-            f'DL[{columns} 60 60]',
+            f'DL[{columns} 40 100 100 40 {columns}]',
+            # f'DL[{columns} 60]',
+            # f'DL[{columns} 60 60]',
         ]
         classifiers = [
-            self._one_node_binary_crossentropy(layers=[columns], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns, columns], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, columns], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, columns, columns], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, columns, columns, columns], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, 100], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, 100, 100], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, 1000], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, 100, 100, 100], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, 20, 30, 20, 30, 20], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, 30, 30, 30], input_shape=columns),
             self._one_node_binary_crossentropy(
-                layers=[columns, columns, columns], input_shape=columns),
+                layers=[columns, 50, 70, 50], input_shape=columns),
             self._one_node_binary_crossentropy(
-                layers=[columns, columns, columns, columns], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns, 100], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns, 100, 100], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns, 1000], input_shape=columns),
-            self._one_node_binary_crossentropy(
-                layers=[columns, 100, 100, 100], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns, 20, 30, 20, 30, 20], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns, 30, 30, 30], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns, 50, 70, 50], input_shape=columns),
-            self._one_node_binary_crossentropy(
-                layers=[columns, 50, 70, 50, columns], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns, 60], input_shape=columns),
-            self._one_node_binary_crossentropy(layers=[columns, 60, 60], input_shape=columns),
+                layers=[columns, 100, 100, 100, columns], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, 60], input_shape=columns),
+            # self._one_node_binary_crossentropy(
+            #     layers=[columns, 60, 60], input_shape=columns),
         ]
-
 
         return classifiers, names
 
     def _validate_dl_classifier_models(self, X, y):
         classifiers, names = self._dl_models(len(X.columns))
-        cv = StratifiedKFold(n_splits=17)
+        cv = StratifiedKFold(n_splits=7)
 
         accuracies = []
         precision_s = []
@@ -92,7 +116,7 @@ class DeepLearningCrossValidationModels(metaclass=abc.ABCMeta):
         for name, classifier in zip(names, classifiers):
             estimator = KerasClassifier(
                 model=classifier,
-                epochs=200,
+                epochs=400,
                 batch_size=-1,
                 verbose=0,
                 random_state=0,
@@ -122,9 +146,9 @@ class DeepLearningCrossValidationModels(metaclass=abc.ABCMeta):
             # print(f"recall:     {recall.mean():.3f} (std) {recall.std():.3f}")
             print(f"f1:         {f1.mean():.3f} (std) {f1.std():.3f}")
 
-            accuracies.append(0)#accuracy.mean())
-            precision_s.append(0)#precision.mean())
-            recalls.append(0)# recall.mean())
+            accuracies.append(0)  # accuracy.mean())
+            precision_s.append(0)  # precision.mean())
+            recalls.append(0)  # recall.mean())
             f1_s.append(f1.mean())
 
             index += 1
