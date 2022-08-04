@@ -52,53 +52,53 @@ class DeepLearningCrossValidationModels(metaclass=abc.ABCMeta):
 
     def _dl_models(self, columns):
         names = [
-            # f'DL[{columns}]',
-            # f'DL[{columns} {columns}]',
-            # f'DL[{columns} {columns} {columns}]',
-            # f'DL[{columns} {columns} {columns} {columns}]',
-            # f'DL[{columns} 100]',
-            # f'DL[{columns} 100]',
-            # f'DL[{columns} 100 100]',
-            # f'DL[{columns} 1000]',
-            # f'DL[{columns} 20 30 20 30 20]',
-            # f'DL[{columns} 30 30 30]',
-            # f'DL[{columns} 50 70 50]',
+            f'DL[{columns}]',
+            f'DL[{columns} {columns}]',
+            f'DL[{columns} {columns} {columns}]',
+            f'DL[{columns} {columns} {columns} {columns}]',
+            f'DL[{columns} 100]',
+            f'DL[{columns} 100]',
+            f'DL[{columns} 100 100]',
+            f'DL[{columns} 1000]',
+            f'DL[{columns} 20 30 20 30 20]',
+            f'DL[{columns} 30 30 30]',
+            f'DL[{columns} 50 70 50]',
             f'DL[{columns} 50 70 50 {columns}]',
             f'DL[{columns} 40 100 100 40 {columns}]',
-            # f'DL[{columns} 60]',
-            # f'DL[{columns} 60 60]',
+            f'DL[{columns} 60]',
+            f'DL[{columns} 60 60]',
         ]
         classifiers = [
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, columns], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, columns, columns], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, columns, columns, columns], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, 100], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, 100, 100], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, 1000], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, 100, 100, 100], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, 20, 30, 20, 30, 20], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, 30, 30, 30], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, columns], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, columns, columns], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, columns, columns, columns], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, 100], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, 100, 100], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, 1000], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, 100, 100, 100], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, 20, 30, 20, 30, 20], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, 30, 30, 30], input_shape=columns),
             self._one_node_binary_crossentropy(
                 layers=[columns, 50, 70, 50], input_shape=columns),
             self._one_node_binary_crossentropy(
                 layers=[columns, 100, 100, 100, columns], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, 60], input_shape=columns),
-            # self._one_node_binary_crossentropy(
-            #     layers=[columns, 60, 60], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, 60], input_shape=columns),
+            self._one_node_binary_crossentropy(
+                layers=[columns, 60, 60], input_shape=columns),
         ]
 
         return classifiers, names
@@ -122,33 +122,33 @@ class DeepLearningCrossValidationModels(metaclass=abc.ABCMeta):
                 random_state=0,
             )
 
-            # accuracy = cross_val_score(
-            #     estimator, X, y,
-            #     cv=cv, scoring='accuracy'
-            # )
-            # precision = cross_val_score(
-            #     estimator, X, y,
-            #     cv=cv, scoring='precision'
-            # )
-            # recall = cross_val_score(
-            #     estimator, X, y,
-            #     cv=cv, scoring='recall'
-            # )
+            accuracy = cross_val_score(
+                estimator, X, y,
+                cv=cv, scoring='accuracy'
+            )
+            precision = cross_val_score(
+                estimator, X, y,
+                cv=cv, scoring='precision'
+            )
+            recall = cross_val_score(
+                estimator, X, y,
+                cv=cv, scoring='recall'
+            )
             f1 = cross_val_score(
                 estimator, X, y,
                 cv=cv, scoring='f1'
             )
             print(f'\n ** {index}.{name} ** \n')
-            # print(
-            #     f"accuracy:   {accuracy.mean():.3f} (std) {accuracy.std():.3f}")
-            # print(
-            #     f"precision:        {precision.mean():.3f} (std) {precision.std():.3f}")
-            # print(f"recall:     {recall.mean():.3f} (std) {recall.std():.3f}")
+            print(
+                f"accuracy:   {accuracy.mean():.3f} (std) {accuracy.std():.3f}")
+            print(
+                f"precision:        {precision.mean():.3f} (std) {precision.std():.3f}")
+            print(f"recall:     {recall.mean():.3f} (std) {recall.std():.3f}")
             print(f"f1:         {f1.mean():.3f} (std) {f1.std():.3f}")
 
-            accuracies.append(0)  # accuracy.mean())
-            precision_s.append(0)  # precision.mean())
-            recalls.append(0)  # recall.mean())
+            accuracies.append(accuracy.mean())
+            precision_s.append(precision.mean())
+            recalls.append(recall.mean())
             f1_s.append(f1.mean())
 
             index += 1
@@ -159,3 +159,19 @@ class DeepLearningCrossValidationModels(metaclass=abc.ABCMeta):
             recalls,
             f1_s,
         ], names
+
+    def _validate_one_dl_classifier_models(self, X, y, xx, yy):
+        estimator = KerasClassifier(
+            model=self._one_node_binary_crossentropy(
+                layers=[len(X.columns), 100, 100, 100, len(X.columns)], input_shape=len(X.columns)),
+            epochs=400,
+            batch_size=-1,
+            verbose=0,
+            random_state=0,
+        )
+        estimator.fit(X, y)
+
+        v = estimator.predict(
+            [xx.values]
+        )
+        print(f'stem: {v} real: {yy}')

@@ -461,6 +461,12 @@ class EEGEyeTracking(
             attrs,
             self._define_target_attribute_full()
         )
+        
+        # X_train_ = X.iloc[:-1]
+        # y_train_ = y.iloc[:-1]
+
+        # X_test = X.iloc[-1]
+        # y_test = y.iloc[-1] 
 
         results, names = self._validate_dl_classifier_models(
             X, y
